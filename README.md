@@ -9,21 +9,21 @@ To encode the maize root structure variation in genotype and interaction with en
 
 Example of 3D maize root structure v.s. Visualization of Quaternion rotation vectors
 
-![Optional Text](../master/media/example.png)
+![Optional Text](../main/media/example.png)
 
 
 
 Example of 3D root Descriptor to enocde genotype varition of a test panel of field-grown maize root samples
 
-![Test data](../master/media/example_12_genotypes.png)
+![Test data](../main/media/example_12_genotypes.png)
 
-![Descriptor result](../master/media/12_genotype_composition.gif)
+![Descriptor result](../main/media/12_genotype_composition.gif)
 
 
 
 Summary of our 3D root Descriptor pipeline
 
-![3D Descriptor pipeline](../master/media/pipeline.png)
+![3D Descriptor pipeline](../main/media/pipeline.png)
 
 
 
@@ -62,7 +62,7 @@ Computed from [Computational-Plant-Science / 3D_model_traits_demo](https://githu
 6. Statical analysis of correlation between rotation angles with Genotype and Environment.    	G*E  
 
 
-![3D descriptor alogrithm design](../master/media/Alogrithm.png)
+![3D descriptor alogrithm design](../main/media/Alogrithm.png)
 
 
 
