@@ -1,9 +1,11 @@
 FROM ubuntu:20.04
 
+FROM docker/whalesay:latest
+
 LABEL maintainer='Suxing Liu, Wes Bonelli'
 
-COPY ./ /opt/3D_model_traits_demo
-WORKDIR /opt/3D_model_traits_demo
+COPY ./ /opt/3D_model_descriptor
+WORKDIR /opt/3D_model_descriptor
 
 
 RUN apt update
@@ -69,11 +71,11 @@ RUN apt update
 RUN apt install python3-graph-tool -y
 
 
-RUN chmod +x /opt/3D_model_traits_demo/shim.sh 
+RUN chmod +x /opt/3D_model_descriptor/shim.sh 
 
 
 
-ENV PYTHONPATH=$PYTHONPATH:/opt/3D_model_traits_demo/
-ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/3D_model_traits_demo/
+ENV PYTHONPATH=$PYTHONPATH:/opt/3D_model_descriptor/
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/3D_model_descriptor/
 
 
