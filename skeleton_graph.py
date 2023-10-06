@@ -11,7 +11,7 @@ USAGE:
 
     python3 skeleton_graph.py -p ~/example/quaternion/tiny/ -m1 tiny_skeleton.ply -v 1 -r 3 -tq 0
 
-    python3 skeleton_graph.py -p ~/example/quaternion/species_comp/Maize_B101/ -m1 B101_skeleton.ply -r 50 -tq 0
+    python3 skeleton_graph.py -p ~/example/quaternion/species_comp/Maize_B101/ -m1 B101_skeleton.ply -v 1 -r 50 -tq 0
 
 
 """
@@ -130,7 +130,14 @@ def graph_plot(x, y, z, start_idx, end_idx, color_rgb):
                         line_width = 1, 
                         scale_factor = 1,
                         opacity = 1.0)
-                        
+    
+    vec = mlab.points3d(x[start_idx],
+                        y[start_idx],
+                        z[start_idx], 
+                        color = color_rgb, 
+                        mode = 'sphere', 
+                        scale_factor = 0.01)
+                                
     #if edge_scalars is not None:
         #vec.glyph.color_mode = 'color_by_scalar'
     

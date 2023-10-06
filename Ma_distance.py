@@ -9,7 +9,7 @@ Author-email: suxingliu@gmail.com
 
 USAGE:
 
-    python3 Ma_distance.py -p ~/example/quaternion/species_comp/bean/average/ -tq 0 
+    python3 Ma_distance.py -p ~/example/quaternion/species_comp/bean/average/ -gl 0 -gn Y_shape -tq 0 
 
 
 
@@ -25,6 +25,7 @@ import numpy as np
 import pandas as pd
 import scipy as stats
 from scipy.stats import chi2
+from scipy.spatial.distance import mahalanobis
 
 import glob
 import os,fnmatch,os.path
@@ -38,6 +39,8 @@ import plotly
 import itertools
 
 from pyquaternion import Quaternion
+
+
 
 
 def mkdir(path):
@@ -64,16 +67,68 @@ def mkdir(path):
         return False
 
 
+def is_invertible(a):
+
+    return a.shape[0] == a.shape[1] and np.linalg.matrix_rank(a) == a.shape[0]
+
+
 # Mahalanobis Function to calculate the Mahalanobis distance
 def calculateMahalanobis(y=None, data=None, cov=None):
+    """
+    Compute the Mahalanobis Distance between each row of y and the data  
+    y    : vector or matrix of data with, say, p columns.
+    data : ndarray of the distribution from which Mahalanobis distance of each observation of y is to be computed.
+    cov  : covariance matrix (p x p) of the distribution. If None, will be computed from data.
+    """
+    
+    
+    if  is_invertible(data.to_numpy()):
+        
+        y_mu = y - np.mean(data, axis=0)
+        
+        if not cov:
+            cov = np.cov(data.values.T)
+            
+        inv_covmat = np.linalg.inv(cov)
+        
+        left = np.dot(y_mu, inv_covmat)
+        
+        mahal = np.dot(left, y_mu.T)
+        
+        print(cov)
+        
+        return mahal.diagonal()
+        
+    else:
 
-    y_mu = y - np.mean(data, axis=0)
-    if not cov:
-        cov = np.cov(data.values.T)
-    inv_covmat = np.linalg.inv(cov)
-    left = np.dot(y_mu, inv_covmat)
-    mahal = np.dot(left, y_mu.T)
-    return mahal.diagonal()
+        print("The matrix is singular and cannot be inverted!\n")
+        
+        return 0
+    
+    
+
+
+
+# Mahalanobis Function to calculate the Mahalanobis distance
+def calculateMahalanobis_lib(y=None, data=None, cov=None):
+
+    
+    # Create a dataset with 2 clusters
+
+    # calculate the mean and covariance matrix of the dataset
+    mean = np.mean(data, axis=0)
+    cov = np.cov(data.values.T)
+
+    # calculate the Mahalanobis distance for each data point
+    mahalanobis_dist = [mahalanobis(x, mean, np.linalg.inv(cov)) for x in data.values]
+    
+    print(cov)
+
+    return mahalanobis_dist
+
+
+
+
 
 
 
@@ -193,13 +248,17 @@ if __name__ == '__main__':
             
             #data_q_list = data_q.values.tolist()
             
-
+    
+            #(ma_distance) = calculateMahalanobis_lib(y = data_q, data = data_q[cols_q])
+            
+            #print("ma_distance = {} \n".format(ma_distance))
             
             # Mahalanobis distance
             #################################################################################################                        
             # Creating a new column in the dataframe that holds the Mahalanobis distance for each row
             df['quaternion_Mahalanobis'] = calculateMahalanobis(y = data_q, data = df[cols_q])
             
+            print(df['quaternion_Mahalanobis'])
             # compute the p-value for every Mahalanobis distance of each observation of the dataset. 
             # Creating a new column in the dataframe that calculates p-value for each mahalanobis distance
             df['quaternion_p'] = 1 - chi2.cdf(df['quaternion_Mahalanobis'], 3)
