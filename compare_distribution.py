@@ -377,7 +377,7 @@ def analyze_mahalanobis(rotVec_rec, data_q_arr, genotype_label, genotype_unique)
     # Print the list of combinations to the console
     print("There are {} Genotype combinations in total\n".format(len(combinations)))
 
-    
+    #print(" avg_rotVec_list = {} in total\n".format(len(avg_rotVec_list)))
     
     
     genotype_pair = []
@@ -395,7 +395,8 @@ def analyze_mahalanobis(rotVec_rec, data_q_arr, genotype_label, genotype_unique)
         vec1_idx =  list(value)[0]
         vec2_idx = list(value)[1]
         
-        
+        #print("vec1_idx = {} vec2_idx = {}\n".format(vec1_idx, vec2_idx))
+
 
         # compoute rotation matrix between adjacent directed vectors
         mat_r = get_rotation_matrix(vec1  = avg_rotVec_list[vec1_idx], vec2 = avg_rotVec_list[vec2_idx])
@@ -765,7 +766,7 @@ if __name__  ==  '__main__':
         
         #Project data into 2D with t-SNE and px.scatter
         #feature_col = ['quaternion_Mahalanobis','quaternion_p','rotVec_Mahalanobis', 'rotVec_p']
-        
+        '''
         feature_col = ['quaternion_Mahalanobis', 'rotVec_Mahalanobis']
         
         features_data = df[feature_col]
@@ -777,7 +778,7 @@ if __name__  ==  '__main__':
         fig = px.scatter(projections, x = 0, y = 1, color = df.genotype, labels = {'color': 'genotype'})
         
         plotly.offline.plot(fig, auto_open = False, filename = current_path + 'Mahalanobis_TSNE.html')
-        
+        '''
     
     
         ################################################################
