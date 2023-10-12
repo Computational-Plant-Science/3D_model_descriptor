@@ -20,7 +20,7 @@ argument:
 
 
 # Importing libraries
-
+import sys
 import numpy as np
 import pandas as pd
 import scipy as stats
@@ -67,9 +67,75 @@ def mkdir(path):
         return False
 
 
-def is_invertible(a):
 
-    return a.shape[0] == a.shape[1] and np.linalg.matrix_rank(a) == a.shape[0]
+# Function to get cofactor of mat[p][q] in temp[][].
+# n is current dimension of mat[][]
+def getCofactor(mat,temp,p,q,n):
+    i = 0
+    j = 0
+     
+    # Looping for each element of the matrix
+    for row in range(n):
+        for col in range(n):
+             
+            # Copying into temporary matrix only 
+            # those element which are not in given 
+            # row and column
+            if (row != p and col != q):
+                temp[i][j] = mat[row][col]
+                j += 1
+                 
+                # Row is filled, so increase row
+                # index and reset col index
+                if (j == n - 1):
+                    j = 0
+                    i += 1
+ 
+# Recursive function to check if mat[][] is
+# singular or not. */
+def isSingular(mat,n):
+    D = 0 # Initialize result
+    N = len(mat)
+    # Base case : if matrix contains single element
+    if (n == 1):
+        return mat[0][0]
+         
+    temp = [[0 for i in range(N + 1)] for i in range(N + 1)]# To store cofactors
+     
+    sign = 1 # To store sign multiplier
+ 
+    # Iterate for each element of first row
+    for f in range(n):
+         
+        # Getting Cofactor of mat[0][f]
+        getCofactor(mat, temp, 0, f, n)
+        D += sign * mat[0][f] * isSingular(temp, n - 1)
+         
+        # terms are to be added with alternate sign
+        sign = -sign
+    return D
+
+
+
+def is_invertible(data_matrix):
+
+    #return data_matrix.shape[0] == data_matrix.shape[1] and np.linalg.matrix_rank(data_matrix) == data_matrix.shape[0]
+    
+    #return np.linalg.matrix_rank(data_matrix) == data_matrix.shape[0]
+    
+    #return (np.linalg.cond(data_matrix) < 1/sys.float_info.epsilon) 
+    
+    if (np.linalg.cond(data_matrix) < 1/sys.float_info.epsilon) or (data_matrix.shape[0] == data_matrix.shape[1] and np.linalg.matrix_rank(data_matrix) == data_matrix.shape[0]):
+
+        return True
+    
+    else: 
+        
+        return False
+        
+    #return np.isfinite(np.linalg.cond(data_matrix))
+    
+    #return np.linalg.det(data_matrix)
 
 
 # Mahalanobis Function to calculate the Mahalanobis distance
@@ -80,9 +146,9 @@ def calculateMahalanobis(y=None, data=None, cov=None):
     data : ndarray of the distribution from which Mahalanobis distance of each observation of y is to be computed.
     cov  : covariance matrix (p x p) of the distribution. If None, will be computed from data.
     """
-    
-    
-    if  is_invertible(data.to_numpy()):
+    if is_invertible(data.to_numpy()):
+        
+        #print("The matrix is invertible!\n")
         
         y_mu = y - np.mean(data, axis=0)
         
@@ -98,12 +164,17 @@ def calculateMahalanobis(y=None, data=None, cov=None):
         print(cov)
         
         return mahal.diagonal()
-        
+    
+    
     else:
-
+        
         print("The matrix is singular and cannot be inverted!\n")
         
         return 0
+
+
+        
+    
     
     
 

@@ -293,7 +293,7 @@ def mahalanobis_p2cluster(X, x1):
     # Calculate the mean vector and covariance matrix of the dataset
     mu = np.mean(X, axis = 0)
     sigma = np.cov(X.T)
-
+    
     # Calculate the Mahalanobis Distance between two points
     dist_mahalanobis = mahalanobis(x1, mu, np.linalg.inv(sigma))
 
@@ -420,6 +420,8 @@ def analyze_mahalanobis(rotVec_rec, data_q_arr, genotype_label, genotype_unique)
         
         # compute Mahalanobis Distance between the average vector and the paired distribution in current combination
         dis_mahalanobis = mahalanobis_p2cluster(rotVec_list[vec1_idx], avg_rotVec_list[vec2_idx])
+        
+        #dis_mahalanobis = 0
         
         dis_mahalanobis_cluster.append(dis_mahalanobis)
         
