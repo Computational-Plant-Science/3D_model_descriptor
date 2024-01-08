@@ -1243,8 +1243,11 @@ def analyze_path_traits(vlist_path, Data_array_skeleton):
 # Skeleton analysis
 def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
+    # parse the model file path
     model_skeleton = current_path + filename_skeleton
+    
     print("Loading 3D skeleton file {}...\n".format(filename_skeleton))
+    
     model_skeleton_name_base = os.path.splitext(model_skeleton)[0]
     
     trait_path = os.path.dirname(current_path + filename_skeleton)
@@ -1261,8 +1264,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             N_edges_skeleton = len(plydata_skeleton['edge'].data['vertex_indices'])
             array_edges_skeleton = plydata_skeleton['edge'].data['vertex_indices']
 
-            print("Ply data structure: \n")
-            print(plydata_skeleton)
+            #print("Ply data structure: \n")
+            #print(plydata_skeleton)
             #print("\n")
             print("Number of 3D points in skeleton model: {0} \n".format(num_vertex_skeleton))
             print("Number of edges: {0} \n".format(N_edges_skeleton))
@@ -1366,6 +1369,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     sub_branch_end_rec = []
     
     avg_node_distance_rec = []
+    avg_n_nodes = []
     
     #sub_branch_projection_rec = []
     #sub_branch_radius_rec = []
@@ -1398,6 +1402,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
         #print("avg_node_distance = {}, sub_branch_length = {}, n_nodes = {}\n".format(avg_node_distance, sub_branch_length, len(int_v_list)))
         
         avg_node_distance_rec.append(avg_node_distance)
+        avg_n_nodes.append(len(int_v_list))
         
         # current sub branch start and end points 
         start_v = [X_skeleton[int_v_list[0]], Y_skeleton[int_v_list[0]], Z_skeleton[int_v_list[0]]]
@@ -1446,13 +1451,11 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     #print(min(sub_branch_angle_rec))
     #print(max(sub_branch_angle_rec))
     
+    print("number of nodes is: {} \n".format(avg_n_nodes))
+    
     
     ####################################################################
-    
-    
-    
-    
-    
+
     '''
     # sort branches according to length feature in descending order
     ####################################################################
@@ -1492,8 +1495,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     
     
-    # graph: find closest point pairs and connect graph nodes and edges, building a connected tree graph
-    ####################################################################
+    # graph: find closest point pairs and connect graph nodes and edges, building a connected graph network
+    ###################################################################################################
     print("Converting skeleton to graph and connecting edges and vertices...\n")
     
 
@@ -1529,19 +1532,19 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
     
     #for idx, (sub_branch, start_v, end_v) in enumerate(zip(sub_branch_list[test_branch_idx:(test_branch_idx+1)], sub_branch_start_rec[test_branch_idx:(test_branch_idx+1)], sub_branch_end_rec[test_branch_idx:(test_branch_idx+1)])):
         
-      
         print("Processing branch ID : {}, contains {} nodes\n".format(idx, len(sub_branch)))
         
- 
-        # branch points in 3d 
+        # 3d points in current branch 
         point_set = np.zeros((len(sub_branch), 3))
         
         point_set[:,0] = X_skeleton[sub_branch]
         point_set[:,1] = Y_skeleton[sub_branch]
         point_set[:,2] = Z_skeleton[sub_branch]
         
+
         # all start points of branches
         query_points = np.zeros((len(end_vlist_offset), 3))
+        
         
         query_points[:,0] = X_skeleton[end_vlist_offset]
         query_points[:,1] = Y_skeleton[end_vlist_offset]
@@ -1563,8 +1566,8 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             candidate_list = end_vlist_offset
 
             # search not visited nodes
-            #s = set(idx_visited_start)
-            #candidate_list = [x for x in end_vlist_offset if x not in s]
+            s = set(idx_visited_start)
+            candidate_list = [x for x in end_vlist_offset if x not in s]
             
             #print(candidate_list)
         
@@ -2155,15 +2158,15 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
             
             #path_color = (1,1,1)
             
-            graph_plot(X_skeleton, Y_skeleton, Z_skeleton, start_idx, end_idx, path_color)
+            #graph_plot(X_skeleton, Y_skeleton, Z_skeleton, start_idx, end_idx, path_color)
             
-            #graph_vis = mlab.points3d(X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path], \
-                    #color = path_color, mode = 'sphere', scale_factor = sf_value)
+            graph_vis = mlab.points3d(X_skeleton[vlist_path], Y_skeleton[vlist_path], Z_skeleton[vlist_path], \
+                    color = path_color, mode = 'sphere', scale_factor = sf_value)
             
             # show the index of path
-            #graph_vis = mlab.text3d(X_skeleton[vlist_path[-1]], Y_skeleton[vlist_path[-1]], Z_skeleton[vlist_path[-1]], \
-                                    #str("{:.0f}".format(i)), color = (0,1,0), \
-                                    #scale = (sf_value, sf_value, sf_value))
+            graph_vis = mlab.text3d(X_skeleton[vlist_path[-1]], Y_skeleton[vlist_path[-1]], Z_skeleton[vlist_path[-1]], \
+                                    str("{:.0f}".format(i)), color = (0,1,0), \
+                                    scale = (sf_value, sf_value, sf_value))
 
         # show the root tip point
         #graph_vis = mlab.points3d(X_skeleton[start_vlist[0]], Y_skeleton[start_vlist[0]], Z_skeleton[start_vlist[0]], \
@@ -2226,7 +2229,7 @@ def analyze_skeleton(current_path, filename_skeleton, filename_pcloud):
                                     #color = (0,0,1), mode = 'sphere', scale_factor = sf_value)
         
         #visualize all the connection points along the longest path
-        #graph_vis = draw_nodes_index(X_skeleton, Y_skeleton, Z_skeleton, closest_pts_sorted, color_rgb_value = (1,0,0), scale_factor = sf_value*1.5)
+        graph_vis = draw_nodes_index(X_skeleton, Y_skeleton, Z_skeleton, closest_pts_sorted, color_rgb_value = (1,0,0), scale_factor = sf_value*1.5)
         
         
         # show all the end_vlist_offset nodes
@@ -2353,13 +2356,13 @@ if __name__ == '__main__':
     
     # construct the argument and parse the arguments
     ap = argparse.ArgumentParser()
-    ap.add_argument("-p", "--path", required = True, help = "path to *.ply model file")
-    ap.add_argument("-m1", "--model_skeleton", required = True, help = "skeleton file name")
-    ap.add_argument("-m2", "--model_pcloud", required = False, default = None, help = "point cloud model file name, same path with ply model")
-    ap.add_argument("-n", "--n_cluster", required = False, type = int, default = 0, help = "Number of clusters to filter the small length paths")
-    ap.add_argument("-r", "--len_ratio", required = False, type = int, default = 50, help = "length threshold to filter the roots, number of nodes in the shortest length path")
+    ap.add_argument("-p", "--path", required = True, help = "path to *.ply model files")
+    ap.add_argument("-ms", "--model_skeleton", required = True, help = "skeleton file name")
+    ap.add_argument("-mp", "--model_pcloud", required = False, default = None, help = "point cloud model file name, same path with ply model")
+    ap.add_argument("-nc", "--n_cluster", required = False, type = int, default = 1, help = "number of clusters to filter the small length paths")
+    ap.add_argument("-lr", "--len_ratio", required = False, type = int, default = 50, help = "length threshold to filter the roots, number of nodes in the shortest length path")
     ap.add_argument("-tq", "--type_quaternion", required = False, type = int, default = 0, help = "analyze quaternion type, average_quaternion=0, composition_quaternion=1, diff_quaternion=2, distance_quaternion=3")
-    ap.add_argument("-v", "--visualize_model", required = False, type = int, default = 0, help = "Display model or not, deafult not display")
+    ap.add_argument("-vis", "--visualize_model", required = False, type = int, default = 0, help = "Display model or not, deafult not display")
     args = vars(ap.parse_args())
 
 

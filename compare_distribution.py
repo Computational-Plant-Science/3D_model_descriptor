@@ -321,7 +321,9 @@ def analyze_mahalanobis(rotVec_rec, data_q_arr, genotype_label, genotype_unique)
     #print((rotVec_rec.shape))
     ###################################################################
     #normalize rotation vectors
-    rotVec_rec_norm = normalize(rotVec_rec, axis = 1, norm = 'l1')
+    #rotVec_rec_norm = normalize(rotVec_rec, axis = 1, norm = 'l1')
+    
+    rotVec_rec_norm = rotVec_rec
     
     #print((normed_rotVec.shape))
     
@@ -361,7 +363,7 @@ def analyze_mahalanobis(rotVec_rec, data_q_arr, genotype_label, genotype_unique)
         avg_rotVec_list.append(normalized_avg_rotVec)
     
         
-    
+    print("There are {} average rotation vectors\n".format(len(avg_rotVec_list)))
     
     
     ###############################################################################
@@ -395,7 +397,7 @@ def analyze_mahalanobis(rotVec_rec, data_q_arr, genotype_label, genotype_unique)
         vec1_idx =  list(value)[0]
         vec2_idx = list(value)[1]
         
-        #print("vec1_idx = {} vec2_idx = {}\n".format(vec1_idx, vec2_idx))
+        print("vec1_idx = {} vec2_idx = {}\n".format(vec1_idx, vec2_idx))
 
 
         # compoute rotation matrix between adjacent directed vectors
@@ -515,7 +517,7 @@ def analyze_mahalanobis(rotVec_rec, data_q_arr, genotype_label, genotype_unique)
         
 
         
-        '''
+        
         ###########################################################################
         # Visualzie vectors by genotypes, colored by different genotypes
         
@@ -548,7 +550,7 @@ def analyze_mahalanobis(rotVec_rec, data_q_arr, genotype_label, genotype_unique)
 
         # Set look-up table and redraw
         sphere.module_manager.scalar_lut_manager.lut.table = colors
-        '''
+        
 
         
         ###################################################################################################################

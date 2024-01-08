@@ -174,6 +174,19 @@ if __name__ == '__main__':
     #loop execute
     for subfolder_id, subfolder_path in enumerate(subfolders):
         
+        
+        folder_name = os.path.basename(subfolder_path) 
+        
+        source_file = subfolder_path + '/plant_result/' + folder_name + '_tag_mask.jpg'
+        
+        target_file = target_path + folder_name + '_tag_mask.jpg'
+        
+        print("Moving file '{}' to {}\n".format(source_file, target_file))
+        
+        file_move(source_file, target_file)
+        
+        
+        
         '''
         folder_name = os.path.basename(subfolder_path)
 
@@ -187,7 +200,7 @@ if __name__ == '__main__':
         '''
         
         
-        
+        '''
         folder_name = os.path.basename(subfolder_path)
         
         print(folder_name)
@@ -199,7 +212,7 @@ if __name__ == '__main__':
         print("Moving file '{}' to {}\n".format(source_file, target_file))
         
         file_move(source_file, target_file)
-        
+        '''
         
         '''
         ##################################################
